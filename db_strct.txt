@@ -1,0 +1,43 @@
+Class Cuadrilla:
+    - ID: int (PK) incremental
+    - Clave: varchar(20) not null
+    - Responsable: varchar(50) not null 
+    - Localidad: varchar(100) not null
+
+Class Recolector:
+     - ID: int (PK) incremental
+     - Clave: varchar(20) not null
+     - Nombre_Completo: varchar(100) not null
+     - Encoder: varchar(200) not null,
+     - Foto: Imagen
+     - Localidad: varchar(100),
+     - Tel: varchar(20),
+     - ID_Cuadrilla: int (FK a Cuadrilla)
+     - Fecha_registro: datetime (por defecto fecha de guardado)
+     - Acceso: bool (para activar o desactivar acceso) 
+
+
+Class Tabla:
+    - ID: int (PK) incremental
+    - Clave: varchar(20)
+    - Ubicacion: varchar(100)
+    - Descripcion: varchar(200)
+    - Num_MT: int
+
+Class Macrotunel:
+    - ID: int (PK) incremental
+    - Clave: varchar(50)
+    - ID_Tabla: int (FK a Tabla)
+    - Descripcion: varchar(200)
+    - Num_pasillos: int
+
+Class cosecha:
+    - ID: int (PK) incremental
+    - Carrito: varchar(50)
+    - ID_Recolector: int (FK a Recolector)
+    - ID_Macrotunel: int (FK a Macrotunel)
+    - Categoria: char(1) (Solo acepta: A, B, C)
+    - Peso: Double
+    - Calificacion: Double (de 0 a 1, futura implementacion)
+    - Foto: Imagen
+    - Fecha_Transaccion: datetime (por defecto la fecha de registro)
