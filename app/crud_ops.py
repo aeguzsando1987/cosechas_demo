@@ -65,3 +65,71 @@ def agregar_recolector(session:Session):
     except Exception as e:
         session.rollback()
         print(f"[ERROR]:{str(e)}")
+        
+
+def actualizar_cuadrilla(sesion: Session):
+    print("\n" + "═"*65)
+    print("ACTUALIZAR CUADRILLA".center(65))
+    print("═"*65)
+    
+    try:
+        # Listar cuadrillas
+        listar_cuadrillas(sesion)
+        
+        # Seleccionar por ID
+        id_cuadrilla = int(input("\n│ Ingrese ID de la cuadrilla a actualizar: "))
+        cuadrilla = sesion.query(Cuadrilla).get(id_cuadrilla)
+        
+        if not cuadrilla:
+            print("¡ID no válido!")
+            return
+
+        # Capturar nuevos valores
+        print("\nDeje en blanco para mantener el valor actual")
+        
+        # Actualizar clave (con validación de unicidad)
+        nueva_clave = input(f"│ Nueva clave [{cuadrilla.clave}]: ").strip()
+        if nueva_clave:
+            if sesion.query(Cuadrilla).filter(Cuadrilla.clave == nueva_clave).first():
+                print("[ERROR] Esa clave ya está en uso por otra cuadrilla")
+                return
+            cuadrilla.clave = nueva_clave
+        
+        # Actualizar responsable
+        nuevo_responsable = input(f"│ Nuevo responsable [{cuadrilla.responsable}]: ").strip()
+        if nuevo_responsable:
+            cuadrilla.responsable = nuevo_responsable
+        
+        # Actualizar localidad
+        nueva_localidad = input(f"│ Nueva localidad [{cuadrilla.localidad}]: ").strip()
+        if nueva_localidad:
+            cuadrilla.localidad = nueva_localidad
+
+        # Verificar si hubo cambios
+        cambios = any([nueva_clave, nuevo_responsable, nueva_localidad])
+        if not cambios:
+            print("\nNo se realizaron cambios")
+            return
+            
+        sesion.commit()
+        
+        # Mostrar confirmación
+        print("\n" + "═"*65)
+        print("[ACTUALIZACIÓN EXITOSA]".center(65))
+        print(f"│ ID: {cuadrilla.id} (inmutable)")
+        print(f"│ Clave: {cuadrilla.clave}")
+        print(f"│ Responsable: {cuadrilla.responsable}")
+        print(f"│ Localidad: {cuadrilla.localidad}")
+        print("═"*65)
+
+    except ValueError:
+        sesion.rollback()
+        print("\n[ERROR] El ID debe ser un número entero")
+    except Exception as e:
+        sesion.rollback()
+        print(f"\n[ERROR]: {str(e)}")
+    finally:
+        input("\nPresione Enter para continuar...")
+        cls_pantalla()    
+    
+
